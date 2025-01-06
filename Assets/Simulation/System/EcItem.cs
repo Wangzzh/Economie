@@ -1,4 +1,4 @@
 public class EcItem
 {
-    public string name;
+    public string name = "Unknown Item";
 }

@@ -10,6 +10,7 @@ public class EcSimulation
     public int optimizationIterations = 20;
 
     bool initialized = false;
+    public int numSteps = 0;
 
     public void AddPopulation(EcPopulation population)
     {
@@ -88,5 +89,22 @@ public class EcSimulation
         Optimize();
         StepInventory();
         Optimize();
+        numSteps += 1;
+    }
+
+    public string DebugString()
+    {
+        string str = "";
+        str += "Num steps: " + numSteps + "\n";
+
+        str += "\n";
+        int populationId = 0;
+        foreach(EcPopulation population in populations)
+        {
+            str += "Population #" + populationId + ":\n";
+            str += population.DebugString();
+            str += "\n";
+        }
+        return str;
     }
 }

@@ -11,4 +11,16 @@ public class EcPopulation
         populationStages.Add(populationStage);
         populationStage.population = this;
     }
+
+    public string DebugString()
+    {
+        string str = "";
+        str += currInventory.DebugString();
+        foreach (EcPopulationStage populationStage in populationStages)
+        {
+            str += populationStage.DebugString();
+            str += populationStage.dstInventory.DebugString();
+        }
+        return str;
+    }
 }

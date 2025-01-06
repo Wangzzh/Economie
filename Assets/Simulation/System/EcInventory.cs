@@ -20,4 +20,14 @@ public class EcInventory
         amounts.Add(item, 0.0);
         desires.Add(item, 0.0);
     }
+
+    public string DebugString()
+    {
+        string str = "";
+        foreach (EcItem item in items)
+        {
+            str += item.ToString() + ": " + amounts[item] + " @" + desires[item] + " | ";
+        }
+        return str + "\n";
+    }
 }

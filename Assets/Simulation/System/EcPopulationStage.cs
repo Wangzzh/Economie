@@ -12,4 +12,19 @@ public class EcPopulationStage
         this.population = population;
         this.stage = stage;
     }
+
+    public string DebugString(bool withInventory = false)
+    {
+        string str = "";
+        if (withInventory)
+        {
+            str += srcInventory.DebugString();
+        }
+        str += this.GetType().Name + "\n";
+        if (withInventory)
+        {
+            str += dstInventory.DebugString();
+        }
+        return str;
+    }
 }
