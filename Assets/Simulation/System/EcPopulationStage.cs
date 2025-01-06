@@ -13,7 +13,11 @@ public class EcPopulationStage
         this.stage = stage;
     }
 
-    public string DebugString(bool withInventory = false)
+    public virtual void Initialize() { }
+
+    public virtual void Optimize() { }
+
+    public virtual string DebugString(bool withInventory = false)
     {
         string str = "";
         if (withInventory)

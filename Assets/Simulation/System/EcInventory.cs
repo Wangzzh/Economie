@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class EcInventory
 {
@@ -21,12 +22,42 @@ public class EcInventory
         desires.Add(item, 0.0);
     }
 
+    public double GetItemAmount(string itemId)
+    {
+        EcItem item = EcItem.GetItemById(itemId);
+        return GetItemAmount(item);
+    }
+
+    public double GetItemAmount(EcItem item)
+    {
+        if (amounts.ContainsKey(item))
+        {
+            return amounts[item];
+        }
+        return 0.0;
+    }
+
+    public double GetItemDesire(string itemId)
+    {
+        EcItem item = EcItem.GetItemById(itemId);
+        return GetItemDesire(item);
+    }
+
+    public double GetItemDesire(EcItem item)
+    {
+        if (amounts.ContainsKey(item))
+        {
+            return desires[item];
+        }
+        return 0.0;
+    }
+
     public string DebugString()
     {
         string str = "";
         foreach (EcItem item in items)
         {
-            str += item.ToString() + ": " + amounts[item] + " @" + desires[item] + " | ";
+            str += item.name + ": " + amounts[item].ToShortString() + " @" + desires[item].ToShortString() + " | ";
         }
         return str + "\n";
     }

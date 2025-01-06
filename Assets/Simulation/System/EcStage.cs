@@ -10,18 +10,24 @@ public class EcStage
         populationStage.stage = this;
     }
 
-    public EcPopulationStage CreatePopulationStage()
+    public virtual void Initialize() { }
+
+    public virtual EcPopulationStage CreatePopulationStage()
     {
         return new EcPopulationStage();
     }
 
-    public void Optimize()
-    {
-        // Do nothing
-    }
+    public virtual void Optimize() { }
 
-    public HashSet<EcItem> ListAllRelatedItems()
+    public virtual HashSet<EcItem> ListAllRelatedItems()
     {
         return new HashSet<EcItem>();
+    }
+
+    public virtual string DebugString()
+    {
+        string str = "";
+        str += this.GetType().Name + "\n";
+        return str;
     }
 }

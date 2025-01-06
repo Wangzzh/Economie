@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class EcSimulation
 {
@@ -24,12 +25,20 @@ public class EcSimulation
         initialized = false;
     }
 
+    // Create population stages and inventories given populations and stages
     public void Initialize()
     {
         // Get related items from stages
-        HashSet<EcItem> itemsSet = new();
+        HashSet<EcItem> itemsSet = new()
+        {
+            EcItem.GetItemById(EcItem.LABOR),
+            EcItem.GetItemById(EcItem.LAND_USAGE),
+            EcItem.GetItemById(EcItem.LAND_OWNERSHIP),
+            EcItem.GetItemById(EcItem.POPULATION),
+        };
         foreach (EcStage stage in stages)
         {
+            stage.Initialize();
             HashSet<EcItem> relatedItems = stage.ListAllRelatedItems();
             foreach(EcItem item in relatedItems)
             {
@@ -54,6 +63,7 @@ public class EcSimulation
                 inventory = new EcInventory();
                 inventory.AddItems(items);
                 populationStage.dstInventory = inventory;
+                populationStage.Initialize();
             }
 
             population.nextInventory = inventory;
@@ -62,9 +72,9 @@ public class EcSimulation
         initialized = true;
     }
 
-    public void Optimize()
+    public void Optimize(int iterations = 1)
     {
-        for (int i = 0; i < optimizationIterations; i++)
+        for (int i = 0; i < iterations; i++)
         {
             foreach(EcStage stage in stages)
             {
@@ -80,15 +90,16 @@ public class EcSimulation
             foreach (EcItem item in items)
             {
                 population.currInventory.amounts[item] = population.nextInventory.amounts[item];
+                population.nextInventory.desires[item] = population.currInventory.desires[item];
             }
         }
     }
 
     public void Step()
     {
-        Optimize();
+        Optimize(optimizationIterations);
         StepInventory();
-        Optimize();
+        Optimize(optimizationIterations);
         numSteps += 1;
     }
 
@@ -96,8 +107,15 @@ public class EcSimulation
     {
         string str = "";
         str += "Num steps: " + numSteps + "\n";
-
         str += "\n";
+
+        int stageId = 0;
+        foreach(EcStage stage in stages)
+        {
+            str += "Stage: #" + stageId + ": " + stage.DebugString() + "\n";
+        }
+        str += "\n";
+
         int populationId = 0;
         foreach(EcPopulation population in populations)
         {
