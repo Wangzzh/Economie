@@ -10,6 +10,7 @@ public partial class EcItem
     public static string LAND_OWNERSHIP = "Land Ownership";
     public static string LAND_USAGE = "Land Usage";
     public static string POPULATION = "Population";
+    public static string UTILITY = "Utility";
 
     public string name = "Unknown Item";
 

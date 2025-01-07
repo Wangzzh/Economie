@@ -19,7 +19,14 @@ public class EcInventory
     {
         items.Add(item);
         amounts.Add(item, 0.0);
-        desires.Add(item, 0.0);
+        if (item == EcItem.GetItemById(EcItem.UTILITY))
+        {
+            desires.Add(item, 1.0);
+        }
+        else
+        {
+            desires.Add(item, 0.0);
+        }
     }
 
     public double GetItemAmount(string itemId)

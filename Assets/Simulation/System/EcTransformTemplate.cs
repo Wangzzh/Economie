@@ -36,4 +36,19 @@ public class EcTransformTemplate
     {
         return new EcTransform(this);
     }
+
+    public string DebugString()
+    {
+        string str = "";
+        foreach(EcItem item in inputItems)
+        {
+            str += item.name + " ";
+        }
+        str += "=> ";
+        foreach(EcItem item in outputItems)
+        {
+            str += item.name + " ";
+        }
+        return str + "\n";
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EcSimulation
@@ -87,10 +88,20 @@ public class EcSimulation
     {
         foreach (EcPopulation population in populations)
         {
+            EcItem UtilityItem = EcItem.GetItemById(EcItem.UTILITY);
             foreach (EcItem item in items)
             {
-                population.currInventory.amounts[item] = population.nextInventory.amounts[item];
-                population.nextInventory.desires[item] = population.currInventory.desires[item];
+                if (item == UtilityItem) 
+                {
+                    population.currInventory.amounts[item] = 0.0;
+                    population.nextInventory.amounts[item] = 0.0;
+                    population.nextInventory.desires[item] = 1.0;
+                }
+                else 
+                {
+                    population.currInventory.amounts[item] = population.nextInventory.amounts[item];
+                    population.nextInventory.desires[item] = population.currInventory.desires[item];
+                }
             }
         }
     }

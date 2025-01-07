@@ -5,20 +5,31 @@ public class EcTransform
 {
     public EcTransformTemplate template;
 
-    public double transformAmount;
-    public Dictionary<EcItem, double> inputAmounts;
-    public Dictionary<EcItem, double> outputAmounts;
-    public Dictionary<EcItem, double> inputDesires;
-    public Dictionary<EcItem, double> outputDesires;
+    public double transformAmount = 0.0;
+    public Dictionary<EcItem, double> inputAmounts = new();
+    public Dictionary<EcItem, double> outputAmounts = new();
+    public Dictionary<EcItem, double> inputDesires = new();
+    public Dictionary<EcItem, double> outputDesires = new();
 
-    public Dictionary<EcItem, bool> inputShortage;
+    public Dictionary<EcItem, bool> inputShortage = new();
     public bool hasShortage = false;
 
-    public double LEARNING_RATE = 0.2;
+    public double LEARNING_RATE = 0.3;
 
     public EcTransform(EcTransformTemplate template)
     {
         this.template = template;
+        foreach(EcItem inputItem in template.inputItems)
+        {
+            inputAmounts.Add(inputItem, 0.0);
+            inputDesires.Add(inputItem, 0.0);
+            inputShortage.Add(inputItem, false);
+        }
+        foreach (EcItem outputItem in template.outputItems)
+        {
+            outputAmounts.Add(outputItem, 0.0);
+            outputDesires.Add(outputItem, 0.0);
+        }
     }
 
     public void CalculateAmounts()
@@ -62,12 +73,21 @@ public class EcTransform
             if (inputShortage[inputItem])
             {
                 double didx = template.GetInputDerivative(transformAmount, inputItem);
-                inputDesires[inputItem] = totalDodx * didx / totalDidx;
+                inputDesires.Add(inputItem, totalDodx * didx / totalDidx);
             }
             else
             {
-                inputDesires[inputItem] = 0.0;
+                inputDesires.Add(inputItem, 0.0);
             }
+        }
+    }
+
+    public void CopyOutputDesires(EcInventory inventory)
+    {
+        outputDesires.Clear();
+        foreach(EcItem outputItem in template.outputItems)
+        {
+            outputDesires.Add(outputItem, inventory.GetItemDesire(outputItem));
         }
     }
 
@@ -77,11 +97,20 @@ public class EcTransform
         CalculateShortage(outputInventory);
         if (!hasShortage)
         {
+            double totaldx = 0.0;
             foreach (EcItem outputItem in template.outputItems)
             {
                 double dodx = template.GetOutputDerivative(transformAmount, outputItem);
-                transformAmount += LEARNING_RATE * outputDesires[outputItem] / dodx;
+                totaldx += outputDesires[outputItem] / dodx;
             }
+            foreach (EcItem inputItem in template.inputItems)
+            {
+                double didx = template.GetInputDerivative(transformAmount, inputItem);
+                totaldx -= inputDesires[inputItem] / didx;
+            }
+            transformAmount += LEARNING_RATE * totaldx;
+            CalculateAmounts();
+            CalculateShortage(outputInventory);
         }
         FixOutputBoundaryCondition(outputInventory);
         BackPropagateDesires();
@@ -146,11 +175,11 @@ public class EcTransform
 
     public string DebugString()
     {
-        string str = "Transform amount: " + transformAmount + " || ";
+        string str = "Transform amount: " + transformAmount.ToShortString() + " || ";
         foreach(EcItem inputItem in template.inputItems)
         {
             str += inputItem.name + ": " + inputAmounts[inputItem].ToShortString() + " @" + inputDesires[inputItem].ToShortString() + " ";
-            if (inputShortage[inputItem]) str += "SHORTAGE! ";
+            if (inputShortage[inputItem]) str += "(S) ";
         }
         str += "=> ";
         foreach (EcItem outputItem in template.outputItems)

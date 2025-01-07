@@ -6,6 +6,7 @@ public class TestSimulation : MonoBehaviour
     public TMPro.TMP_Text debugText;
 
     EcPopulation population = new EcPopulation();
+    EcTransformStage consumptionStage = new();
 
     void Start()
     {
@@ -14,14 +15,16 @@ public class TestSimulation : MonoBehaviour
         
         simulation.AddPopulation(population);
 
-        var consumptionStage = new ConsumptionStage();
-        consumptionStage.enabled.Add(ConsumptionType.FOOD, true);
+        consumptionStage.templates = new()
+        {
+            new FoodConsumptionTemplate()
+        };
         simulation.AddStage(consumptionStage);
         
         simulation.Initialize();
 
-        population.AddToCurrentInventory(EcItem.FOOD, 25);
-        population.AddToCurrentInventory(EcItem.POPULATION, 20);
+        population.AddToCurrentInventory(EcItem.FOOD, 3);
+        population.AddToCurrentInventory(EcItem.POPULATION, 1);
         population.AddToCurrentInventory(EcItem.LAND_OWNERSHIP, 1);
         Debug.Log("Simulation initialized.");
     }
@@ -37,7 +40,7 @@ public class TestSimulation : MonoBehaviour
         Debug.Log("Simulation stepping...");
         simulation.StepInventory();
         Debug.Log("Simulation stepped.");
-        population.AddToCurrentInventory(EcItem.FOOD, Random.Range(10, 30));
+        population.AddToCurrentInventory(EcItem.FOOD, Random.Range(1, 3));
     }
 
     public void Optimize(int n)
