@@ -55,7 +55,7 @@ public class ConsumptionPopulationStage : EcPopulationStage
         {
             Debug.Log("Direct desire: " + directDesire[EcItem.GetItemById(EcItem.FOOD)]);
             Debug.Log("Dst desire: " + dstInventory.GetItemDesire(EcItem.FOOD));
-            var newConsumedAmount = consumedAmount[ConsumptionType.FOOD] + LEARNING_RATE * (directDesire[EcItem.GetItemById(EcItem.FOOD)] - dstInventory.GetItemDesire(EcItem.FOOD));
+            var newConsumedAmount = consumedAmount[ConsumptionType.FOOD] + LEARNING_RATE * (directDesire[EcItem.GetItemById(EcItem.FOOD)] - 0.8 * dstInventory.GetItemDesire(EcItem.FOOD));
             newConsumedAmount = Math.Clamp(newConsumedAmount, 0.0, srcInventory.GetItemAmount(EcItem.FOOD));
             consumedAmount[ConsumptionType.FOOD] = newConsumedAmount;
         }

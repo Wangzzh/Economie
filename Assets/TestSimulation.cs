@@ -37,7 +37,7 @@ public class TestSimulation : MonoBehaviour
         Debug.Log("Simulation stepping...");
         simulation.StepInventory();
         Debug.Log("Simulation stepped.");
-        population.AddToCurrentInventory(EcItem.FOOD, 25);
+        population.AddToCurrentInventory(EcItem.FOOD, Random.Range(10, 30));
     }
 
     public void Optimize(int n)
